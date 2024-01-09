@@ -128,8 +128,6 @@
           >Submit</base-button
         >
         <!-- <button :disabled="enteredAgreement">submit</button> -->
-
-        
       </div>
     </form>
     <button @click="showMembers">Show</button>
@@ -154,7 +152,7 @@ export default defineComponent({
     const nameValidity = ref("pending");
     const rating = ref(null);
 
-    const membersData= ref()
+    const membersData = ref();
 
     const submitForm = () => {
       console.log("Referrer:" + enteredReferrer.value);
@@ -182,24 +180,36 @@ export default defineComponent({
       enteredAgreement.value = !enteredAgreement.value;
     };
 
-    const showMembers= async()=>{
-        try{
-            const response= await axios.get(
-                "https://vue-http-demo-5fa8b-default-rtdb.firebaseio.com/survey.json"
-            )
-           membersData.value= response.data
-            console.log(membersData);
-            
-        }catch(error){
-            alert("error fetching members data!!")
+    const showMembers = async () => {
+      try {
+        const response = await axios.get(
+          "https://vue-http-demo-5fa8b-default-rtdb.firebaseio.com/survey.json"
+        );
+
+        const members= []
+        for(const key in response.data){
+          const member={
+            id: key,
+            name: response.data[key].name,
+            age: response.data[key].age,
+          }
+
+          members.push(member)
         }
 
-        const name= membersData.value
+        membersData.value= members
 
+        for(let i=0; i<members.length; i++){
+          console.log('name: '+ members[i].name + '-----' + 'age: '+ members[i].age)  
+        }
         
 
+      } catch (error) {
+        alert("error fetching members data!!");
+      }
 
-    }
+      // const name = membersData.value;
+    };
 
     return {
       enteredName,
@@ -213,7 +223,7 @@ export default defineComponent({
       submitForm,
       rating,
       toggleEnteredAgreement,
-      showMembers
+      showMembers,
     };
   },
 });
