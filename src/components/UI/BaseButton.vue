@@ -38,6 +38,11 @@ button:active {
   background-color: #edd2ff;
 }
 
+.flat:disabled{
+    color: black;
+    cursor: not-allowed;
+}
+
 
 .classic {
   background-color: transparent;

@@ -111,7 +111,6 @@
         <div class="button-input">
           <rating-control v-model="rating"></rating-control>
         </div>
-       
 
         <div class="agreement">
           <input
@@ -120,13 +119,20 @@
             id="agreement"
             value="agreement"
             v-model="enteredAgreement"
+            @click="toggleEnteredAgreement"
           />
           <label for="agreement">Agree to terms and conditions?</label>
         </div>
-        <br>
-        <base-button>Submit</base-button>
+        <br />
+        <base-button mode="flat" :disabled="!enteredAgreement"
+          >Submit</base-button
+        >
+        <!-- <button :disabled="enteredAgreement">submit</button> -->
+
+        
       </div>
     </form>
+    <button @click="showMembers">Show</button>
   </div>
 </template>
 
@@ -134,6 +140,7 @@
 import { defineComponent, ref } from "vue";
 import RatingControl from "./RatingControl.vue";
 
+import axios from "axios";
 
 export default defineComponent({
   components: { RatingControl },
@@ -143,15 +150,24 @@ export default defineComponent({
     const enteredReferrer = ref("google");
     const enteredHow = ref("");
     const enteredinterest = ref([]);
-    const enteredAgreement = ref("");
+    const enteredAgreement = ref(false);
     const nameValidity = ref("pending");
     const rating = ref(null);
+
+    const membersData= ref()
 
     const submitForm = () => {
       console.log("Referrer:" + enteredReferrer.value);
       console.log("Rating:" + rating.value);
-      rating.value= null
+      rating.value = null;
 
+      axios.post(
+        "https://vue-http-demo-5fa8b-default-rtdb.firebaseio.com/survey.json",
+        {
+          name: enteredName.value,
+          age: enteredAge.value,
+        }
+      );
     };
 
     const checkNameValidity = () => {
@@ -161,6 +177,29 @@ export default defineComponent({
         nameValidity.value = "valid";
       }
     };
+
+    const toggleEnteredAgreement = () => {
+      enteredAgreement.value = !enteredAgreement.value;
+    };
+
+    const showMembers= async()=>{
+        try{
+            const response= await axios.get(
+                "https://vue-http-demo-5fa8b-default-rtdb.firebaseio.com/survey.json"
+            )
+           membersData.value= response.data
+            console.log(membersData);
+            
+        }catch(error){
+            alert("error fetching members data!!")
+        }
+
+        const name= membersData.value
+
+        
+
+
+    }
 
     return {
       enteredName,
@@ -173,6 +212,8 @@ export default defineComponent({
       checkNameValidity,
       submitForm,
       rating,
+      toggleEnteredAgreement,
+      showMembers
     };
   },
 });

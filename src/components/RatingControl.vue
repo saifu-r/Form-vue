@@ -25,8 +25,9 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
-export default {
+import { defineComponent, ref } from "vue";
+
+export default defineComponent({
   props: ["modelValue"],
   emits: ["update:modelValue"],
   setup(props, {emit}) {
@@ -39,7 +40,7 @@ export default {
 
     return { buttonPressed, selectButtonPressed };
   },
-};
+});
 </script>
 
 <style scoped>
